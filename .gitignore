@@ -1,0 +1,16 @@
+# Django Specific
+*.log
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+.env
+# Editor/IDE
+.idea/
+.vscode/
+
+# Virtual Environment
+venv/
+.venv/
+env/
+ENV/
