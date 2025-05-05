@@ -1,0 +1,84 @@
+{% extends 'countries/base.html' %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Search & Filter Form -->
+    <form class="mb-3 d-flex align-items-center gap-2" method="get">
+        <div class="input-group w-50">
+            <input type="text" class="form-control" name="search" placeholder="Search countries..." value="{{ request.GET.search }}">
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+        {% if request.GET %}
+        <a href="{% url 'country_list' %}" class="btn btn-outline-secondary">Clear All Filters</a>
+        {% endif %}
+    </form>
+
+    <!-- Active Filters Display -->
+    {% if request.GET.region or request.GET.language %}
+    <div class="mb-3">
+        <strong>Active Filters:</strong>
+        {% if request.GET.region %}
+            <span class="badge bg-info text-dark me-2">
+                Region: {{ request.GET.region }}
+                <a href="{% url 'country_list' %}?{% if request.GET.language %}language={{ request.GET.language }}{% endif %}" class="text-decoration-none text-reset ms-1">×</a>
+            </span>
+        {% endif %}
+        {% if request.GET.language %}
+            <span class="badge bg-warning text-dark me-2">
+                Language: {{ request.GET.language }}
+                <a href="{% url 'country_list' %}?{% if request.GET.region %}region={{ request.GET.region }}{% endif %}" class="text-decoration-none text-reset ms-1">×</a>
+            </span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Countries Table -->
+    <table class="table table-striped table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Flag</th>
+                <th>Name</th>
+                <th>CCA2</th>
+                <th>Capital</th>
+                <th>Population</th>
+                <th>Timezone</th>
+                <th>Region & Languages</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country in countries %}
+            <tr>
+                <td><img src="{{ country.flag }}" alt="{{ country.name }} flag" width="50"></td>
+                <td>{{ country.name }}</td>
+                <td>{{ country.cca2 }}</td>
+                <td>{{ country.capital }}</td>
+                <td>{{ country.population }}</td>
+                <td>{{ country.timezone }}</td>
+                <td>
+                    <div class="mb-2">
+                        <strong>Region:</strong>
+                        <a href="{% url 'country_list' %}?region={{ country.region }}" class="badge bg-primary text-decoration-none">
+                            {{ country.region }}
+                        </a>
+                    </div>
+                    <div>
+                        <strong>Languages:</strong>
+                        {% for key, lang in country.languages.items %}
+                            <a href="{% url 'country_list' %}?language={{ key }}" class="badge bg-secondary text-decoration-none me-1">
+                                {{ lang }}
+                            </a>
+                        {% empty %}
+                            <span class="text-muted">None</span>
+                        {% endfor %}
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" class="text-center text-muted">No countries found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

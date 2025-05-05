@@ -1,0 +1,31 @@
+{% extends 'countries/base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h2 class="mb-4">Register</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input class="form-control" type="text" name="username" id="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input class="form-control" type="password" name="password" id="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="password_confirm" class="form-label">Confirm Password</label>
+                <input class="form-control" type="password" name="password_confirm" id="password_confirm" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
