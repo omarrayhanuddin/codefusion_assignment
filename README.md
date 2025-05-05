@@ -1,5 +1,16 @@
-```markdown
 # CodeFusion Python Developer Assignment
+
+## Table of Contents
+- [Overview](#overview)
+- [Installation Steps](#installation-steps)
+- [Required Dependencies](#required-dependencies)
+- [Database Setup and Configuration](#database-setup-and-configuration)
+- [Running the Application](#running-the-application)
+- [Running Tests](#running-tests)
+- [Project Features](#project-features)
+- [Project Structure](#project-structure)
+- [Development Notes](#development-notes)
+- [Troubleshooting](#troubleshooting)
 
 ## Overview
 
@@ -19,8 +30,12 @@ To set up and run the project locally, follow these steps:
 
 2. **Create and Activate a Virtual Environment**:
    ```bash
-   python3 -m venv venv  # On Windows: python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   # Unix/macOS/Linux
+   python3 -m venv venv
+   source venv/bin/activate
+   # Windows
+   python -m venv venv
+   venv\Scripts\activate
    ```
 
 3. **Install Dependencies**:
@@ -43,6 +58,7 @@ To set up and run the project locally, follow these steps:
      from django.core.management.utils import get_random_secret_key
      print(get_random_secret_key())
      ```
+   - **Note**: Do not commit `.env` to version control; it’s excluded via `.gitignore`.
 
 5. **Apply Database Migrations**:
    ```bash
@@ -76,11 +92,11 @@ The project uses the following dependencies, as specified in `requirements.txt`:
 - **requests==2.32.3**: Library for fetching data from the REST Countries API.
 - **django-filter==25.1**: Library for filtering API and web interface queries.
 - **python-decouple==3.8**: Library for managing environment variables from a `.env` file.
-- **Bootstrap 5.3.3**: Frontend framework for styling (loaded via CDN).
+- **Bootstrap 5.3.3**: Frontend framework for styling (loaded via CDN, no local installation required).
 
-To install dependencies manually:
+To install dependencies:
 ```bash
-pip install Django==5.2 djangorestframework==3.16.0 requests==2.32.3 django-filter==25.1 python-decouple==3.8
+pip install -r requirements.txt
 ```
 
 ---
@@ -88,7 +104,7 @@ pip install Django==5.2 djangorestframework==3.16.0 requests==2.32.3 django-filt
 ## Database Setup and Configuration
 
 - **Database**: SQLite (default Django database).
-- **Database File**: `db.sqlite3` (created in the project root).
+- **Database File**: `db.sqlite3` (automatically created in the project root during migrations).
 - **Configuration**:
   - Configured in `codefusion_assignment/settings.py`:
     ```python
@@ -101,7 +117,7 @@ pip install Django==5.2 djangorestframework==3.16.0 requests==2.32.3 django-filt
     ```
   - No additional configuration is required.
 - **Setup Steps**:
-  - Run migrations to create the database schema:
+  - Run migrations to create the database schema and `db.sqlite3`:
     ```bash
     python manage.py migrate
     ```
@@ -152,9 +168,12 @@ With the server running (`python manage.py runserver`), access the application a
 - **Authentication**:
   - **Session Authentication**: For browsable API access in browsers.
   - **Basic Authentication**: For programmatic access (e.g., `curl -u username:password http://localhost:8000/api/countries/`).
-- **Note**: Avoid sending `Accept: application/json` headers in browsers to ensure the browsable API renders correctly.
+- **Note**: Use a standard browser to access the browsable API; avoid API clients that force JSON responses (e.g., Postman) unless using basic authentication.
 
-### Running Tests
+---
+
+## Running Tests
+
 Unit tests verify model and view functionality:
 ```bash
 python manage.py test
@@ -185,6 +204,9 @@ python manage.py test
 
 ## Project Structure
 
+- **`.gitignore`**: Excludes sensitive files (e.g., `.env`, `db.sqlite3`).
+- **`.env.example`**: Sample environment variable configuration.
+- **`requirements.txt`**: Lists dependencies.
 - **`countries/models.py`**: Defines the `Country` model.
 - **`countries/views.py`**: Handles web views (country list, registration) and API views (`CountryViewSet` with filtering).
 - **`countries/serializers.py`**: Serializes country data for the API.
@@ -194,8 +216,29 @@ python manage.py test
 - **`countries/tests.py`**: Unit tests for models and views.
 - **`codefusion_assignment/settings.py`**: Configures Django, DRF, and database settings.
 - **`codefusion_assignment/urls.py`**: Defines URL routing.
-- **`.env.example`**: Sample environment variable configuration.
-- **`requirements.txt`**: Lists dependencies.
 
 ---
-```
+
+## Development Notes
+
+- **Commits**: Developed with frequent commits to document progress, including data fetching, API endpoints, web interface, authentication, environment variable integration, and fixes.
+- **Repository**: Hosted in a public Git repository at `https://github.com/omarrayhanuddin/codefusion_assignment.git`.
+- **API Access**: Ensure the REST Countries API is accessible when running `fetch_countries`.
+- **Templates**: Located in `countries/templates/countries/` to follow Django’s app-specific structure.
+- **Security**: The `.env` file is excluded from version control via `.gitignore` to protect sensitive data.
+- **Testing**: Run tests to verify functionality before submission.
+
+---
+
+## Troubleshooting
+
+- **Browsable API Shows JSON Error**: If you see `{"detail": "Authentication credentials were not provided."}`, ensure you’re accessing `http://localhost:8000/api/countries/` in a standard browser. Use incognito mode or a different browser to avoid header issues.
+- **Template Errors**: Verify templates are in `countries/templates/countries/` (e.g., `countries/country_list.html`).
+- **Environment Variables**: Ensure the `.env` file exists and contains valid `SECRET_KEY` and `REST_COUNTRIES_API_URL`. Check values in the Django shell:
+  ```python
+  from decouple import config
+  print(config('SECRET_KEY'))
+  print(config('REST_COUNTRIES_API_URL'))
+  ```
+- **Dependency Issues**: Verify all dependencies are installed (`pip list`) and match `requirements.txt`. If errors occur, recreate the virtual environment and reinstall.
+- **Database Errors**: Ensure migrations are applied (`python manage.py migrate`) and `db.sqlite3` is writable.
